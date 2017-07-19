@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet1" msprop:Generator_UserDSName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="TableConfigItems" msprop:Generator_TableClassName="TableConfigItemsDataTable" msprop:Generator_TableVarName="tableTableConfigItems" msprop:Generator_RowChangedName="TableConfigItemsRowChanged" msprop:Generator_TablePropName="TableConfigItems" msprop:Generator_RowDeletingName="TableConfigItemsRowDeleting" msprop:Generator_RowChangingName="TableConfigItemsRowChanging" msprop:Generator_RowEvHandlerName="TableConfigItemsRowChangeEventHandler" msprop:Generator_RowDeletedName="TableConfigItemsRowDeleted" msprop:Generator_RowClassName="TableConfigItemsRow" msprop:Generator_UserTableName="TableConfigItems" msprop:Generator_RowEvArgName="TableConfigItemsRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Profile" msprop:Generator_ColumnVarNameInTable="columnProfile" msprop:Generator_ColumnPropNameInRow="Profile" msprop:Generator_ColumnPropNameInTable="ProfileColumn" msprop:Generator_UserColumnName="Profile" type="xs:string" minOccurs="0" />
+              <xs:element name="Source" msprop:Generator_ColumnVarNameInTable="columnSource" msprop:Generator_ColumnPropNameInRow="Source" msprop:Generator_ColumnPropNameInTable="SourceColumn" msprop:Generator_UserColumnName="Source" type="xs:string" minOccurs="0" />
+              <xs:element name="Destination" msprop:Generator_ColumnVarNameInTable="columnDestination" msprop:Generator_ColumnPropNameInRow="Destination" msprop:Generator_ColumnPropNameInTable="DestinationColumn" msprop:Generator_UserColumnName="Destination" type="xs:string" minOccurs="0" />
+              <xs:element name="Filter" msprop:Generator_ColumnVarNameInTable="columnFilter" msprop:Generator_ColumnPropNameInRow="Filter" msprop:Generator_ColumnPropNameInTable="FilterColumn" msprop:Generator_UserColumnName="Filter" type="xs:string" minOccurs="0" />
+              <xs:element name="Direction" msprop:Generator_ColumnVarNameInTable="columnDirection" msprop:Generator_ColumnPropNameInRow="Direction" msprop:Generator_ColumnPropNameInTable="DirectionColumn" msprop:Generator_UserColumnName="Direction" type="xs:string" minOccurs="0" />
+              <xs:element name="Action" msprop:Generator_ColumnVarNameInTable="columnAction" msprop:Generator_ColumnPropNameInRow="Action" msprop:Generator_ColumnPropNameInTable="ActionColumn" msprop:Generator_UserColumnName="Action" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
