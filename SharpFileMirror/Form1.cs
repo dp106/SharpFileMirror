@@ -22,6 +22,10 @@ namespace SharpFileMirror
         private string AppName = "SharpFileMirror";
         private string appPath;
         private string XMLFile;
+        private List<string> monitoredFolders = new List<string>();
+        private List<string> inProgressFiles = new List<string>;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -46,18 +50,21 @@ namespace SharpFileMirror
             buttonUndo.Visible = false;
             lastFile = "";
 
+            getDistinctFolders();
+
             monitorFolders();
             //backgroundWorkerFileMonitor.RunWorkerAsync();
 
         }
         private void button1_Click(object sender, EventArgs e)
-        {
+        { }
+
+        private void doFileWork() { 
             List<filePair> fileList = new List<filePair>();
 
             
             foreach(DataGridViewRow dr in dataGridView1.Rows)
-            {
-                
+            {                
                 string source = dr.Cells[0].Value.ToString();
                 string destination = dr.Cells[1].Value.ToString();
                 string filter = dr.Cells[2].Value.ToString();
@@ -85,6 +92,7 @@ namespace SharpFileMirror
                     fileList.Add(fp);
                 }                
             }
+
             // MoveTime();
             progresslabel.Visible = true;
             copyProgressBar.Visible = true;
@@ -195,40 +203,55 @@ namespace SharpFileMirror
 
         }
 
-
-//  FILE WATCHER CODE BELOW
+        private void getDistinctFolders() {
+            DataRow[] drArray = dataSet1.TableConfigItems.Select();
+            monitoredFolders.Clear();
+            foreach(DataRow dr in drArray)
+            {                
+                if(!(monitoredFolders.Contains(dr.ItemArray.GetValue(1).ToString()))) {
+                    monitoredFolders.Add(dr.ItemArray.GetValue(1).ToString());
+                }
+            }
+            
+        }
+        
+        //  FILE WATCHER CODE BELOW
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static void monitorFolders()
+        private void monitorFolders()
         {
-         
-            // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = "E:\\Video\\Output";
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            // Only watch text files.
-            watcher.Filter = "*.txt";
 
-            // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+            foreach (string monitoredFolder in monitoredFolders)
+            {
+                // Create a new FileSystemWatcher and set its properties.
+                FileSystemWatcher watcher = new FileSystemWatcher();
+                watcher.Path = monitoredFolder;
+                /* Watch for changes in LastAccess and LastWrite times, and
+                   the renaming of files or directories. */
+                watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                   | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                // Only watch text files.
+                watcher.Filter = "*.*";
 
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
+                // Add event handlers.
+                watcher.Changed += new FileSystemEventHandler(OnChanged);
+                watcher.Created += new FileSystemEventHandler(OnChanged);
+                watcher.Deleted += new FileSystemEventHandler(OnChanged);
+                watcher.Renamed += new RenamedEventHandler(OnRenamed);
 
-            //// Wait for the user to quit the program.
-            //Console.WriteLine("Press \'q\' to quit the sample.");
-            //while (Console.Read() != 'q') ;
+                // Begin watching.
+                watcher.EnableRaisingEvents = true;
+
+                //// Wait for the user to quit the program.
+                //Console.WriteLine("Press \'q\' to quit the sample.");
+                //while (Console.Read() != 'q') ;
+            }
         }
         // Define the event handlers.
         private static void OnChanged(object source, FileSystemEventArgs e)
         {
             // Specify what is done when a file is changed, created, or deleted.
             Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
+            
         }
         private static void OnRenamed(object source, RenamedEventArgs e)
         {
