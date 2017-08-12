@@ -23,9 +23,10 @@ namespace SharpFileMirror
         private string appPath;
         private string XMLFile;
         private List<string> monitoredFolders = new List<string>();
-        private List<string> inProgressFiles = new List<string>;
-
-
+        private List<string> inProgressFiles = new List<string>();
+        private Boolean workingOnChanges = false;
+        private Boolean firstRun = true;
+        
         public Form1()
         {
             InitializeComponent();
@@ -62,48 +63,54 @@ namespace SharpFileMirror
         private void doFileWork() { 
             List<filePair> fileList = new List<filePair>();
 
-            
-            foreach(DataGridViewRow dr in dataGridView1.Rows)
-            {                
-                string source = dr.Cells[0].Value.ToString();
-                string destination = dr.Cells[1].Value.ToString();
-                string filter = dr.Cells[2].Value.ToString();
-
-                Console.WriteLine("Source: " + source);
-                Console.WriteLine("Destination: " + destination);
-                Console.WriteLine("Filter: " + filter);
-
-                //DriveInfo di = new System.IO.DriveInfo(@source);
-                DirectoryInfo dirInfo = new DirectoryInfo(source);
-                Console.WriteLine(dirInfo.Attributes.ToString());
-
-                // Get the files in the directory and print out some information about them.
-                System.IO.FileInfo[] fileNames = dirInfo.GetFiles(filter);
-
-                //  THIS IS A METHOD FOR SEARCHING MULTIPLE FILES BUT I HAVE DECIDED TO USE THE PREVIOUS ONE AND DO ONE EXTENSION AT A TIME
-                //  var files = Directory.EnumerateFiles(source, "*.*", SearchOption.AllDirectories)
-                //          .Where(s => s.EndsWith(".mp4") || s.EndsWith(".MOV") || s.EndsWith(".wmv"));
-
-                foreach(FileInfo fi in fileNames)
+            if (firstRun)
+            {
+                firstRun = false;
+                foreach (DataGridViewRow dr in dataGridView1.Rows)
                 {
-                    filePair fp = new filePair();
-                    fp.source = fi;
-                    fp.destination = destination;
-                    fileList.Add(fp);
-                }                
+                    string source = dr.Cells[1].Value.ToString();
+                    string destination = dr.Cells[2].Value.ToString();
+                    string filter = dr.Cells[3].Value.ToString();
+
+                    Console.WriteLine("Source: " + source);
+                    Console.WriteLine("Destination: " + destination);
+                    Console.WriteLine("Filter: " + filter);
+
+                    //DriveInfo di = new System.IO.DriveInfo(@source);
+                    DirectoryInfo dirInfo = new DirectoryInfo(source);
+                    Console.WriteLine(dirInfo.Attributes.ToString());
+
+                    // Get the files in the directory and print out some information about them.
+                    System.IO.FileInfo[] fileNames = dirInfo.GetFiles(filter);
+
+                    //  THIS IS A METHOD FOR SEARCHING MULTIPLE FILES BUT I HAVE DECIDED TO USE THE PREVIOUS ONE AND DO ONE EXTENSION AT A TIME
+                    //  var files = Directory.EnumerateFiles(source, "*.*", SearchOption.AllDirectories)
+                    //          .Where(s => s.EndsWith(".mp4") || s.EndsWith(".MOV") || s.EndsWith(".wmv"));
+
+                    foreach (FileInfo fi in fileNames)
+                    {
+                        filePair fp = new filePair();
+                        fp.source = fi;
+                        fp.destination = destination;
+                        fileList.Add(fp);
+                    }
+                }
+
+                if (fileList.Count > 0)
+                {
+                    workingOnChanges = true;
+                    // MoveTime();
+                    progresslabel.Visible = true;
+                    copyProgressBar.Visible = true;
+
+                    moveFile MF = new moveFile();
+                    MF.fileList = fileList;
+
+                    // Start the asynchronous operation.
+                    backgroundWorker1.RunWorkerAsync(MF);
+                    lastFile = "";
+                }
             }
-
-            // MoveTime();
-            progresslabel.Visible = true;
-            copyProgressBar.Visible = true;
-
-            moveFile MF = new moveFile();
-            MF.fileList = fileList;
-
-            // Start the asynchronous operation.
-            backgroundWorker1.RunWorkerAsync(MF);
-            lastFile = "";
-
         }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -142,7 +149,8 @@ namespace SharpFileMirror
                 MessageBox.Show("Finished copy.");
             progresslabel.Visible = false;
             copyProgressBar.Visible = false;
-
+            workingOnChanges = false;
+            //doFileWork();
         }
         private void buttonNew_Click(object sender, EventArgs e)
         {
@@ -219,10 +227,11 @@ namespace SharpFileMirror
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         private void monitorFolders()
         {
-
+            
             foreach (string monitoredFolder in monitoredFolders)
             {
                 // Create a new FileSystemWatcher and set its properties.
+                
                 FileSystemWatcher watcher = new FileSystemWatcher();
                 watcher.Path = monitoredFolder;
                 /* Watch for changes in LastAccess and LastWrite times, and
@@ -285,6 +294,7 @@ namespace SharpFileMirror
             //file is not locked
             return false;
         }
+
     }
 
     public class filePair
